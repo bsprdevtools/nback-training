@@ -66,7 +66,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 50%, var(--primary-900) 100%);
@@ -78,6 +78,196 @@
             color: var(--gray-900);
             font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ダークモード */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a3a 100%);
+        }
+
+        body.dark-mode .container {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode h1 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .subtitle {
+            color: #a0a0a0;
+        }
+
+        body.dark-mode .setting-group {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .setting-label {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .setting-button {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .setting-button.active {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            color: var(--white);
+        }
+
+        body.dark-mode .stat-card.score {
+            background: linear-gradient(135deg, #4F46E5, #4338CA);
+        }
+
+        body.dark-mode .stat-card.correct {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        body.dark-mode .stat-card.accuracy {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        body.dark-mode .game-area {
+            background: linear-gradient(135deg, #2a2a2a, #1e1e1e);
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .game-area.example {
+            background: linear-gradient(135deg, #3a3520, #2a2510);
+            border-color: var(--warning-600);
+        }
+
+        body.dark-mode .instruction-card {
+            background: linear-gradient(135deg, #3a3520, #2a2510);
+            border-color: var(--warning-600);
+        }
+
+        body.dark-mode .instruction-title,
+        body.dark-mode .instruction-subtitle {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .start-message {
+            color: #808080;
+        }
+
+        body.dark-mode .trial-info {
+            background: rgba(30, 30, 30, 0.95);
+            color: #e0e0e0;
+            border-color: rgba(79, 70, 229, 0.3);
+        }
+
+        body.dark-mode .example-explanation {
+            background: rgba(30, 30, 30, 0.98);
+            border-color: var(--warning-500);
+        }
+
+        body.dark-mode .example-explanation #example-text {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .hint-area {
+            background: rgba(30, 30, 30, 0.95);
+            border-color: var(--warning-500);
+        }
+
+        body.dark-mode .hint-label {
+            color: #a0a0a0;
+        }
+
+        body.dark-mode .hint-letter {
+            color: #ffffff;
+        }
+
+        body.dark-mode .answer-button {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #e0e0e0;
+        }
+
+        body.dark-mode .answer-button.showing-feedback {
+            background: #2a2a2a !important;
+            color: #e0e0e0 !important;
+            border-color: #e0e0e0 !important;
+        }
+
+        body.dark-mode .control-button {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #e0e0e0;
+        }
+
+        body.dark-mode .instructions-card {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .instructions-card h4 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .instructions-card li {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+        }
+
+        body.dark-mode .modal-content {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .modal-content h4 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .tutorial-button {
+            background: #2a2a2a;
+            border-color: var(--primary-500);
+            color: var(--primary-400);
+        }
+
+        body.dark-mode .result-stats {
+            background: linear-gradient(135deg, #2a2a3a, #1e1e1e);
+            border-color: var(--primary-500);
+        }
+
+        body.dark-mode .result-screen h2 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .result-score,
+        body.dark-mode .result-accuracy,
+        body.dark-mode .result-points {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .letter {
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ダークモード時の設定モーダル用スタイル */
+        body.dark-mode #settings-modal .modal-content > div > div {
+            background: #2a2a2a !important;
+            border-color: #3a3a3a !important;
+        }
+
+        body.dark-mode #settings-modal .modal-content > div > div > div > div:first-child {
+            color: #e0e0e0 !important;
+        }
+
+        body.dark-mode #settings-modal .modal-content > div > div > div > div:last-child {
+            color: #a0a0a0 !important;
         }
         
         .container {
@@ -525,10 +715,13 @@
             line-height: 1;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        
+
         .answer-button:active:not(:disabled) {
-            opacity: 0.8;
+            opacity: 0.7;
+            transform: scale(0.98);
         }
         
         .answer-button:disabled {
@@ -592,7 +785,7 @@
 
         @keyframes judgmentAppear {
             0% {
-                transform: scale(1.3);
+                transform: scale(0.9);
                 opacity: 0;
             }
             100% {
@@ -736,10 +929,11 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.7);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             z-index: 1000;
             padding: 20px;
+            padding-top: 80px;
         }
 
         .modal-content {
@@ -801,90 +995,224 @@
         }
 
         #sound-toggle:checked + span {
-            background-color: var(--primary-600);
+            background-color: var(--success-600);
         }
 
         #sound-toggle:checked + span + span {
             transform: translateX(26px);
         }
 
+        #dark-mode-toggle:checked + span {
+            background-color: var(--primary-600);
+        }
+
+        #dark-mode-toggle:checked + span + span {
+            transform: translateX(26px);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
             .container {
-                padding: 32px 24px;
-                margin: 16px;
+                padding: 16px;
+                margin: 0;
+                border-radius: var(--border-radius-lg);
+            }
+
+            .header {
+                margin-bottom: 16px;
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 1.5rem;
+                margin-bottom: 4px;
             }
 
+            .subtitle {
+                font-size: 0.85rem;
+            }
+
+            /* 設定エリアをコンパクトに */
             .settings-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 12px;
+                margin-bottom: 16px;
             }
 
+            .setting-group {
+                padding: 16px;
+            }
+
+            .setting-label {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+            }
+
+            .setting-button {
+                min-height: 40px;
+                font-size: 0.75rem;
+            }
+
+            .setting-button small {
+                font-size: 0.6rem;
+            }
+
+            /* 統計カードを横1列に圧縮 */
             .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+                margin-bottom: 4px;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            /* ゲームエリアを大幅に縮小 */
+            .game-area {
+                height: 280px;
+                margin-bottom: 16px;
+            }
+
+            .letter {
+                font-size: 100px;
+            }
+
+            .start-message {
+                font-size: 1rem;
+                padding: 0 16px;
+            }
+
+            .trial-info {
+                top: 12px;
+                right: 12px;
+                padding: 8px 14px;
+                font-size: 0.9rem;
             }
 
             .example-explanation {
                 top: 10px;
-                padding: 12px 20px;
+                padding: 10px 16px;
                 max-width: 95%;
             }
 
             .example-explanation #example-text {
-                font-size: 0.95rem;
-            }
-            
-            .letter {
-                font-size: 150px;
-            }
-            
-            .answer-buttons {
-                flex-direction: column;
-                gap: 20px;
-                width: 100%;
+                font-size: 0.85rem;
             }
 
-            .answer-button-wrapper {
-                width: 100%;
+            /* 説明カードをコンパクトに */
+            .instruction-card {
+                padding: 16px;
+                margin: 12px 0;
+            }
+
+            .instruction-title {
+                font-size: 1.2rem;
+                margin-bottom: 6px;
+            }
+
+            /* 回答ボタンを横並びに保つがコンパクト化 */
+            .answer-area {
+                margin-bottom: 16px;
+                padding: 12px 0;
+            }
+
+            .answer-buttons {
+                gap: 12px;
             }
 
             .answer-button {
-                padding: 64px 32px;
-                min-width: 100%;
-                font-size: 10rem;
+                padding: 32px 20px;
+                min-width: 0;
+                font-size: 5rem;
             }
 
             .judgment-result.correct {
-                font-size: 20rem;
+                font-size: 10rem;
             }
 
             .judgment-result.incorrect {
-                font-size: 28rem;
-                top: -0.1em;
+                font-size: 14rem;
             }
 
             .hint-area {
                 bottom: 10px;
-                padding: 12px 20px;
+                padding: 10px 16px;
+            }
+
+            .hint-label {
+                font-size: 0.75rem;
             }
 
             .hint-letter {
+                font-size: 2rem;
+            }
+
+            /* コントロールボタン */
+            .controls {
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+
+            .control-button {
+                min-width: 100px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            /* ルール説明ボタン */
+            .tutorial-button {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+
+            /* モーダルのクローズボタン */
+            .modal-overlay {
+                padding-top: 60px;
+            }
+
+            .modal-content {
+                padding: 24px 16px;
+                max-height: 85vh;
+            }
+
+            .modal-content h4 {
+                font-size: 1.1rem;
+            }
+
+            /* 結果画面 */
+            .result-screen h2 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .result-stats {
+                padding: 32px 20px;
+                margin-bottom: 20px;
+            }
+
+            .result-score {
                 font-size: 2.5rem;
             }
 
-            .controls {
-                flex-wrap: wrap;
-                gap: 12px;
+            .result-accuracy {
+                font-size: 1.2rem;
             }
-            
-            .control-button {
-                min-width: 120px;
-                padding: 12px 24px;
+
+            .result-points {
+                font-size: 1rem;
             }
         }
 
@@ -945,13 +1273,25 @@
                     <h4>⚙️ 設定</h4>
 
                     <div style="margin: 24px 0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: var(--border-radius); border: 1px solid var(--gray-200); margin-bottom: 16px;">
                             <div>
                                 <div style="font-weight: 600; color: var(--gray-900); margin-bottom: 4px;">効果音</div>
                                 <div style="font-size: 0.875rem; color: var(--gray-600);">正解・不正解時の音</div>
                             </div>
                             <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
                                 <input type="checkbox" id="sound-toggle" style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-300); transition: .4s; border-radius: 34px;"></span>
+                                <span style="position: absolute; cursor: pointer; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
+                            <div>
+                                <div style="font-weight: 600; color: var(--gray-900); margin-bottom: 4px;">ダークモード</div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">暗い画面で表示</div>
+                            </div>
+                            <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                                <input type="checkbox" id="dark-mode-toggle" style="opacity: 0; width: 0; height: 0;">
                                 <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-300); transition: .4s; border-radius: 34px;"></span>
                                 <span style="position: absolute; cursor: pointer; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
                             </label>
@@ -1064,7 +1404,7 @@
             <div class="result-buttons">
                 <button id="replay-button" class="control-button start">
                     <span>▶</span>
-                    <span>もう一度プレイ</span>
+                    <span>もう一度<br>プレイ</span>
                 </button>
                 <button id="menu-button" class="control-button reset">
                     <span>📋</span>
@@ -1111,53 +1451,80 @@
                 this.showHint = false;
                 this.lastAnsweredButton = null;
                 this.lastAnswerCorrect = null;
-                this.skipLetterUpdate = false;
 
                 this.timerRef = null;
                 this.hideTimerRef = null;
+                this.animationEndHandler = null;
 
                 this.hiragana = ['あ', 'い', 'う', 'え', 'お', 'か', 'き', 'く', 'け', 'こ', 'さ', 'し'];
 
                 // Audio Context for sound effects
                 this.audioContext = null;
-                this.soundEnabled = true;
+                this.soundEnabled = localStorage.getItem('nback-sound-enabled') !== 'false';
+                this.soundsPreloaded = false;
 
                 this.initializeElements();
                 this.setupEventListeners();
+                this.preloadSounds();
                 this.updateDisplay();
             }
 
-            playSound(isCorrect) {
+            preloadSounds() {
+                // 効果音を事前生成してパフォーマンス向上
                 try {
                     if (!this.audioContext) {
                         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     }
-
-                    const oscillator = this.audioContext.createOscillator();
-                    const gainNode = this.audioContext.createGain();
-
-                    oscillator.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
-
-                    if (isCorrect) {
-                        // 正解音：明るい音
-                        oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
-                        oscillator.frequency.exponentialRampToValueAtTime(1000, this.audioContext.currentTime + 0.1);
-                    } else {
-                        // 不正解音：低い音
-                        oscillator.frequency.setValueAtTime(200, this.audioContext.currentTime);
-                        oscillator.frequency.exponentialRampToValueAtTime(150, this.audioContext.currentTime + 0.15);
-                    }
-
-                    oscillator.type = 'sine';
-                    gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + (isCorrect ? 0.15 : 0.2));
-
-                    oscillator.start(this.audioContext.currentTime);
-                    oscillator.stop(this.audioContext.currentTime + (isCorrect ? 0.15 : 0.2));
+                    this.soundsPreloaded = true;
                 } catch (e) {
-                    // Audio not supported, silently fail
-                    console.log('Audio not supported');
+                    this.soundEnabled = false;
+                }
+            }
+
+            playSound(isCorrect) {
+                if (!this.soundEnabled || !this.soundsPreloaded) return;
+
+                try {
+                    if (isCorrect) {
+                        // ピンポーン音（ド→ミ）
+                        const osc1 = this.audioContext.createOscillator();
+                        const gain1 = this.audioContext.createGain();
+                        osc1.connect(gain1);
+                        gain1.connect(this.audioContext.destination);
+                        osc1.frequency.value = 523; // C5（ド）
+                        osc1.type = 'sine';
+                        gain1.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                        gain1.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                        osc1.start();
+                        osc1.stop(this.audioContext.currentTime + 0.15);
+
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain2 = this.audioContext.createGain();
+                        osc2.connect(gain2);
+                        gain2.connect(this.audioContext.destination);
+                        osc2.frequency.value = 659; // E5（ミ）
+                        osc2.type = 'sine';
+                        gain2.gain.setValueAtTime(0.2, this.audioContext.currentTime + 0.1);
+                        gain2.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                        osc2.start(this.audioContext.currentTime + 0.1);
+                        osc2.stop(this.audioContext.currentTime + 0.3);
+                    } else {
+                        // ブブー音（低音）
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.setValueAtTime(200, this.audioContext.currentTime);
+                        osc.frequency.linearRampToValueAtTime(150, this.audioContext.currentTime + 0.3);
+                        osc.type = 'sawtooth';
+                        gain.gain.setValueAtTime(0.15, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                        osc.start();
+                        osc.stop(this.audioContext.currentTime + 0.3);
+                    }
+                } catch (e) {
+                    // Audio error - disable sound
+                    this.soundEnabled = false;
                 }
             }
             
@@ -1169,6 +1536,7 @@
                     levelButtons: document.querySelectorAll('button[data-level]'),
                     timeButtons: document.querySelectorAll('button[data-time]'),
                     soundToggle: document.getElementById('sound-toggle'),
+                    darkModeToggle: document.getElementById('dark-mode-toggle'),
                     score: document.getElementById('score'),
                     correctCount: document.getElementById('correct-count'),
                     accuracy: document.getElementById('accuracy'),
@@ -1222,15 +1590,52 @@
                 this.elements.soundToggle.checked = this.soundEnabled;
                 this.elements.soundToggle.addEventListener('change', (e) => {
                     this.soundEnabled = e.target.checked;
+                    localStorage.setItem('nback-sound-enabled', e.target.checked);
+                });
+
+                // ダークモードトグル
+                const savedDarkMode = localStorage.getItem('nback-dark-mode') === 'true';
+                this.elements.darkModeToggle.checked = savedDarkMode;
+                if (savedDarkMode) {
+                    document.body.classList.add('dark-mode');
+                }
+                this.elements.darkModeToggle.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                    localStorage.setItem('nback-dark-mode', e.target.checked);
                 });
 
                 // コントロールボタン
                 this.elements.startButton.addEventListener('click', () => this.toggleGame());
                 this.elements.resetButton.addEventListener('click', () => this.resetGame());
                 
-                // 回答ボタン
-                this.elements.sameButton.addEventListener('click', () => this.handleAnswer(true));
-                this.elements.differentButton.addEventListener('click', () => this.handleAnswer(false));
+                // 回答ボタン - クリックとタッチの両方に対応
+                // 共通の回答処理フラグで、〇と×の両方押しを防止
+                let answerHandled = false;
+
+                const handleSame = (e) => {
+                    e.preventDefault();
+                    if (answerHandled) return;
+                    answerHandled = true;
+                    this.handleAnswer(true);
+                    setTimeout(() => answerHandled = false, 300);
+                };
+
+                const handleDifferent = (e) => {
+                    e.preventDefault();
+                    if (answerHandled) return;
+                    answerHandled = true;
+                    this.handleAnswer(false);
+                    setTimeout(() => answerHandled = false, 300);
+                };
+
+                this.elements.sameButton.addEventListener('click', handleSame);
+                this.elements.sameButton.addEventListener('touchend', handleSame);
+                this.elements.differentButton.addEventListener('click', handleDifferent);
+                this.elements.differentButton.addEventListener('touchend', handleDifferent);
 
                 // 答えを見るボタン
                 this.elements.hintButton.addEventListener('click', () => this.toggleHint());
@@ -1240,6 +1645,12 @@
                     this.showResult = false;
                     this.updateDisplay();
                     this.startGame();
+                    // 画面の一番下にスクロール
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            window.scrollTo(0, document.body.scrollHeight);
+                        });
+                    });
                 });
                 this.elements.menuButton.addEventListener('click', () => {
                     this.showResult = false;
@@ -1312,7 +1723,7 @@
                         <div style="background: var(--white); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px; border: 2px solid var(--warning-200);">
                             <div style="font-weight: 600; color: var(--warning-700); margin-bottom: 12px;">📝 例：2-back（2つ前と比べる）</div>
                             <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px; background: var(--warning-50); padding: 8px 12px; border-radius: 6px;">
-                                ⚠️ 最初の<strong>2つ</strong>は覚えるだけ。<strong>3番目</strong>から答えます！
+                                ⚠️ 最初の<strong style="color: var(--error-600);">2つ</strong>は例題（ボタン非表示）。<strong>3番目から〇×ボタンが表示され回答開始</strong>！
                             </div>
                             <div style="margin-bottom: 16px; position: relative;">
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; font-size: 1.3rem;">
@@ -1364,7 +1775,7 @@
                         <div style="background: var(--white); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px; border: 2px solid var(--error-200);">
                             <div style="font-weight: 600; color: var(--error-700); margin-bottom: 12px;">📝 例：3-back（3つ前と比べる）</div>
                             <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px; background: var(--error-50); padding: 8px 12px; border-radius: 6px;">
-                                ⚠️ 最初の<strong>3つ</strong>は覚えるだけ。<strong>4番目</strong>から答えます！
+                                ⚠️ 最初の<strong style="color: var(--error-600);">3つ</strong>は例題（ボタン非表示）。<strong>4番目から〇×ボタンが表示され回答開始</strong>！
                             </div>
                             <div style="margin-bottom: 16px; position: relative;">
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0px; font-size: 1.2rem; position: relative;">
@@ -1483,15 +1894,19 @@
                 this.updateDisplay();
 
                 if (this.showLetter) {
-                    // アニメーション終了を待ってから非表示にする
-                    const onAnimationEnd = () => {
+                    // 古いアニメーションハンドラーを削除
+                    if (this.animationEndHandler) {
+                        this.elements.letter.removeEventListener('animationend', this.animationEndHandler);
+                    }
+
+                    // 新しいアニメーションハンドラーを登録
+                    this.animationEndHandler = () => {
                         if (!this.isPaused) {
                             this.elements.letter.classList.add('hidden');
                             this.showLetter = false;
                         }
-                        this.elements.letter.removeEventListener('animationend', onAnimationEnd);
                     };
-                    this.elements.letter.addEventListener('animationend', onAnimationEnd);
+                    this.elements.letter.addEventListener('animationend', this.animationEndHandler);
                 }
 
                 this.timerRef = setTimeout(() => {
@@ -1503,6 +1918,11 @@
                 this.isPlaying = false;
                 this.isPaused = false;
                 this.clearTimers();
+                // アニメーションハンドラーをクリーンアップ
+                if (this.animationEndHandler) {
+                    this.elements.letter.removeEventListener('animationend', this.animationEndHandler);
+                    this.animationEndHandler = null;
+                }
                 this.updateDisplay();
             }
             
@@ -1520,7 +1940,6 @@
                 this.showHint = false;
                 this.lastAnsweredButton = null;
                 this.lastAnswerCorrect = null;
-                this.skipLetterUpdate = false;
                 this.updateDisplay();
             }
             
@@ -1558,16 +1977,20 @@
                 
                 this.updateDisplay();
 
-                // アニメーション終了を待ってから非表示にする
-                const onAnimationEnd = () => {
+                // 古いアニメーションハンドラーを削除
+                if (this.animationEndHandler) {
+                    this.elements.letter.removeEventListener('animationend', this.animationEndHandler);
+                }
+
+                // 新しいアニメーションハンドラーを登録
+                this.animationEndHandler = () => {
                     if (!this.isPaused) {
                         this.elements.letter.classList.add('hidden');
                         this.showLetter = false;
                     }
-                    this.elements.letter.removeEventListener('animationend', onAnimationEnd);
                 };
-                this.elements.letter.addEventListener('animationend', onAnimationEnd);
-                
+                this.elements.letter.addEventListener('animationend', this.animationEndHandler);
+
                 this.timerRef = setTimeout(() => {
                     if (!this.isPaused) {
                         this.runTrial(trialNum + 1, newLetters);
@@ -1578,14 +2001,17 @@
             handleAnswer(isMatch) {
                 if (!this.canAnswer || !this.isPlaying || this.isPaused) return;
 
+                // 即座に回答不可にして、二重回答を完全に防止
+                this.canAnswer = false;
+
                 const currentIndex = this.letters.length - 1;
                 const compareIndex = currentIndex - this.level;
                 const actualMatch = this.letters[currentIndex] === this.letters[compareIndex];
                 const correct = isMatch === actualMatch;
 
-                // 効果音を再生
+                // 効果音を非同期で再生（メイン処理をブロックしない）
                 if (this.soundEnabled) {
-                    this.playSound(correct);
+                    setTimeout(() => this.playSound(correct), 0);
                 }
 
                 // 文字は通常通りアニメーションで消える（タイマーはそのまま）
@@ -1596,18 +2022,24 @@
                 }
 
                 this.totalAnswered += 1;
-                this.canAnswer = false;
                 // this.showHint = false; を削除して、答え表示を継続
+
+                // 押したボタンと判定結果を保存
+                this.lastAnsweredButton = isMatch ? 'same' : 'different';
+                this.lastAnswerCorrect = correct;
+                this.feedback = 'showing';
+
+                // 判定結果を即座に表示
+                this.showJudgmentImmediate();
+
+                // 統計のみ更新
+                this.elements.score.textContent = this.score;
+                this.elements.correctCount.textContent = this.correctCount;
+                const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
+                this.elements.accuracy.textContent = accuracy.toFixed(1) + '%';
 
                 // 激ムズモード（レベル4）：10問以上で不正解なら即終了
                 if (this.level === 4 && !correct && this.totalAnswered >= 10) {
-                    // 押したボタンと判定結果を保存
-                    this.lastAnsweredButton = isMatch ? 'same' : 'different';
-                    this.lastAnswerCorrect = correct;
-                    this.feedback = 'showing';
-                    this.skipLetterUpdate = true;
-                    this.updateDisplay();
-
                     // 1秒後に結果画面へ
                     setTimeout(() => {
                         this.clearTimers();
@@ -1623,19 +2055,12 @@
                     return;
                 }
 
-                // 押したボタンと判定結果を保存
-                this.lastAnsweredButton = isMatch ? 'same' : 'different';
-                this.lastAnswerCorrect = correct;
-                this.feedback = 'showing';
-                this.skipLetterUpdate = true; // 文字の更新をスキップ
-
-                this.updateDisplay();
-
                 setTimeout(() => {
                     this.feedback = '';
                     this.lastAnsweredButton = null;
                     this.lastAnswerCorrect = null;
-                    this.updateDisplay();
+                    this.hideJudgment();
+                    // canAnswerは次の文字表示時に自動的に設定されるため、ここでは変更しない
                 }, 1000);
             }
 
@@ -1643,6 +2068,27 @@
                 if (!this.isPlaying || this.isPaused) return;
                 this.showHint = !this.showHint;
                 this.updateDisplay();
+            }
+
+            showJudgmentImmediate() {
+                // 判定結果を即座に表示（updateDisplay()を呼ばずに直接DOM操作）
+                if (!this.lastAnsweredButton) return;
+
+                const judgmentElement = this.lastAnsweredButton === 'same' ? this.elements.sameJudgment : this.elements.differentJudgment;
+                const resultElement = judgmentElement.querySelector('.judgment-result');
+
+                judgmentElement.classList.remove('hidden');
+                resultElement.textContent = this.lastAnswerCorrect ? '〇' : '×';
+                resultElement.className = `judgment-result ${this.lastAnswerCorrect ? 'correct' : 'incorrect'}`;
+
+                const otherJudgment = this.lastAnsweredButton === 'same' ? this.elements.differentJudgment : this.elements.sameJudgment;
+                otherJudgment.classList.add('hidden');
+            }
+
+            hideJudgment() {
+                // 判定表示を非表示に
+                this.elements.sameJudgment.classList.add('hidden');
+                this.elements.differentJudgment.classList.add('hidden');
             }
 
             clearTimers() {
@@ -1660,7 +2106,7 @@
                 // 画面の表示切り替え
                 this.elements.gameScreen.classList.toggle('hidden', this.showResult);
                 this.elements.resultScreen.classList.toggle('hidden', !this.showResult);
-                
+
                 if (this.showResult) {
                     const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
                     this.elements.resultScore.textContent = `${this.correctCount}/10問正解`;
@@ -1668,7 +2114,7 @@
                     this.elements.resultPoints.textContent = `スコア: ${this.score}点`;
                     return;
                 }
-                
+
                 // レベルと時間設定表示
                 this.updateLevelDisplay();
                 this.updateTimeDisplay();
@@ -1680,22 +2126,17 @@
                 this.elements.accuracy.textContent = accuracy.toFixed(1) + '%';
                 
                 // ゲームエリア表示
-                if (!this.skipLetterUpdate) {
-                    if (this.showLetter) {
-                        this.elements.letter.classList.remove('hidden');
-                        if (this.elements.letter.textContent !== this.currentLetter) {
-                            // 新しい文字の時だけアニメーションをリセット
-                            this.elements.letter.textContent = this.currentLetter;
-                            // 表示時間に合わせてアニメーションの長さを調整
-                            this.elements.letter.style.animationDuration = `${this.letterDisplayTime}ms`;
-                            // アニメーションをリセットして再開
-                            this.elements.letter.style.animation = 'none';
-                            this.elements.letter.offsetHeight; // リフロー強制
-                            this.elements.letter.style.animation = '';
-                        }
-                    }
+                if (this.showLetter) {
+                    this.elements.letter.classList.remove('hidden');
+                    // 文字を設定
+                    this.elements.letter.textContent = this.currentLetter;
+                    // 表示時間に合わせてアニメーションの長さを調整
+                    this.elements.letter.style.animationDuration = `${this.letterDisplayTime}ms`;
+                    // アニメーションを必ずリセットして再開（同じ文字でも表示されるように）
+                    this.elements.letter.style.animation = 'none';
+                    this.elements.letter.offsetHeight; // リフロー強制
+                    this.elements.letter.style.animation = '';
                 }
-                this.skipLetterUpdate = false; // フラグをリセット
                 
                 // 判定結果表示（押したボタンの上にオーバーレイ）
                 if (this.feedback === 'showing' && this.lastAnsweredButton) {
