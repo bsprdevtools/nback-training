@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N-back課題練習アプリ Pro</title>
+
+    <!-- PWA設定 -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="N-back Pro">
+    <link rel="apple-touch-icon" href="./icon.svg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-600: #4F46E5;
+            --primary-700: #4338CA;
+            --primary-500: #6366F1;
+            --primary-400: #818CF8;
+            --primary-50: #EEF2FF;
+            
+            --success-600: #059669;
+            --success-700: #047857;
+            --success-500: #10B981;
+            --success-50: #ECFDF5;
+            
+            --error-600: #DC2626;
+            --error-700: #B91C1C;
+            --error-500: #EF4444;
+            --error-50: #FEF2F2;
+            
+            --warning-600: #D97706;
+            --warning-700: #B45309;
+            --warning-500: #F59E0B;
+            --warning-50: #FFFBEB;
+            
+            --gray-900: #111827;
+            --gray-800: #1F2937;
+            --gray-700: #374151;
+            --gray-600: #4B5563;
+            --gray-500: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-300: #D1D5DB;
+            --gray-200: #E5E7EB;
+            --gray-100: #F3F4F6;
+            --gray-50: #F9FAFB;
+            
+            --white: #FFFFFF;
+            --black: #000000;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            
+            --border-radius-sm: 6px;
+            --border-radius: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            --border-radius-2xl: 24px;
+            
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 50%, var(--primary-900) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: var(--gray-900);
+            font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ダークモード */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a3a 100%);
+        }
+
+        body.dark-mode .container {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode h1 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .subtitle {
+            color: #a0a0a0;
+        }
+
+        body.dark-mode .setting-group {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .setting-label {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .setting-button {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .setting-button.active {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            color: var(--white);
+        }
+
+        body.dark-mode .stat-card.score {
+            background: linear-gradient(135deg, #4F46E5, #4338CA);
+        }
+
+        body.dark-mode .stat-card.correct {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        body.dark-mode .stat-card.accuracy {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        body.dark-mode .game-area {
+            background: linear-gradient(135deg, #2a2a2a, #1e1e1e);
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .game-area.example {
+            background: linear-gradient(135deg, #3a3520, #2a2510);
+            border-color: var(--warning-600);
+        }
+
+        body.dark-mode .instruction-card {
+            background: linear-gradient(135deg, #3a3520, #2a2510);
+            border-color: var(--warning-600);
+        }
+
+        body.dark-mode .instruction-title,
+        body.dark-mode .instruction-subtitle {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .start-message {
+            color: #808080;
+        }
+
+        body.dark-mode .trial-info {
+            background: rgba(30, 30, 30, 0.95);
+            color: #e0e0e0;
+            border-color: rgba(79, 70, 229, 0.3);
+        }
+
+        body.dark-mode .example-explanation {
+            background: rgba(30, 30, 30, 0.98);
+            border-color: var(--warning-500);
+        }
+
+        body.dark-mode .example-explanation #example-text {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .hint-area {
+            background: rgba(30, 30, 30, 0.95);
+            border-color: var(--warning-500);
+        }
+
+        body.dark-mode .hint-label {
+            color: #a0a0a0;
+        }
+
+        body.dark-mode .hint-letter {
+            color: #ffffff;
+        }
+
+        body.dark-mode .answer-button {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #e0e0e0;
+        }
+
+        body.dark-mode .answer-button.showing-feedback {
+            background: #2a2a2a !important;
+            color: #e0e0e0 !important;
+            border-color: #e0e0e0 !important;
+        }
+
+        body.dark-mode .control-button {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #e0e0e0;
+        }
+
+        body.dark-mode .instructions-card {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+
+        body.dark-mode .instructions-card h4 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .instructions-card li {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+        }
+
+        body.dark-mode .modal-content {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .modal-content h4 {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .tutorial-button {
+            background: #2a2a2a;
+            border-color: var(--primary-500);
+            color: var(--primary-400);
+        }
+
+        body.dark-mode .result-stats {
+            background: linear-gradient(135deg, #2a2a3a, #1e1e1e);
+            border-color: var(--primary-500);
+        }
+
+        body.dark-mode .result-screen h2 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .result-score,
+        body.dark-mode .result-accuracy,
+        body.dark-mode .result-points {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .letter {
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ダークモード時の設定モーダル用スタイル */
+        body.dark-mode #settings-modal .modal-content > div > div {
+            background: #2a2a2a !important;
+            border-color: #3a3a3a !important;
+        }
+
+        body.dark-mode #settings-modal .modal-content > div > div > div > div:first-child {
+            color: #e0e0e0 !important;
+        }
+
+        body.dark-mode #settings-modal .modal-content > div > div > div > div:last-child {
+            color: #a0a0a0 !important;
+        }
+        
+        .container {
+            background: var(--white);
+            border-radius: var(--border-radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            padding: 48px;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+        
+        .subtitle {
+            color: var(--gray-600);
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+        
+        .instruction-card {
+            background: linear-gradient(135deg, var(--warning-50), #FEF7CD);
+            border: 2px solid var(--warning-500);
+            border-radius: var(--border-radius-lg);
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .instruction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--warning-500), var(--warning-600));
+        }
+        
+        .instruction-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        
+        .instruction-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+            align-items: end;
+        }
+        
+        .setting-group {
+            background: var(--gray-50);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+        }
+        
+        .setting-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .setting-button {
+            flex: 1;
+            min-height: 44px;
+            padding: 8px 4px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-700);
+            font-weight: 600;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            cursor: pointer;
+            transition: none;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .setting-button small {
+            font-size: 0.68rem;
+            font-weight: 400;
+            color: var(--gray-500);
+            display: block;
+            margin-top: 2px;
+        }
+        
+        .setting-button.active {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            border-color: var(--primary-600);
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .setting-button.active small {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .setting-button:active:not(:disabled) {
+            opacity: 0.8;
+        }
+
+        .setting-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            padding: 24px;
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card.score {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+        }
+        
+        .stat-card.correct {
+            background: linear-gradient(135deg, var(--success-600), var(--success-700));
+        }
+        
+        .stat-card.accuracy {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .game-area {
+            background: linear-gradient(135deg, var(--gray-50), var(--white));
+            border-radius: var(--border-radius-xl);
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 32px;
+            border: 2px solid var(--gray-100);
+            overflow: hidden;
+        }
+        
+        .game-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(79, 70, 229, 0.05), transparent 70%);
+            pointer-events: none;
+            transition: background var(--transition-smooth);
+        }
+
+        .game-area.example {
+            background: linear-gradient(135deg, #FEF7CD, #FFF4A3);
+            border: 3px solid var(--warning-500);
+        }
+
+        .game-area.example::before {
+            background: radial-gradient(circle at center, rgba(234, 179, 8, 0.15), transparent 70%);
+        }
+        
+        .letter {
+            font-size: 200px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            animation: letterAppear 2s ease-in-out forwards;
+        }
+        
+        @keyframes letterAppear {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            12.5% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            87.5% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+        }
+        
+        .feedback {
+            font-size: 3.5rem;
+            font-weight: 800;
+            animation: feedbackBounce var(--transition-smooth) ease-out;
+        }
+        
+        @keyframes feedbackBounce {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .feedback.correct {
+            background: linear-gradient(135deg, var(--success-600), var(--success-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feedback.incorrect {
+            background: linear-gradient(135deg, var(--error-600), var(--error-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .start-message {
+            font-size: 1.5rem;
+            color: var(--gray-500);
+            text-align: center;
+            font-weight: 500;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+        
+        .trial-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-lg);
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+
+        .example-explanation {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 16px 28px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 3px solid var(--warning-500);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .example-explanation #example-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            line-height: 1.5;
+        }
+
+        .hint-area {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--warning-500);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hint-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        .hint-letter {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--warning-600), var(--warning-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .control-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border: 2px solid var(--gray-900);
+            border-radius: var(--border-radius-lg);
+            background: var(--white);
+            color: var(--gray-900);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: none;
+            position: relative;
+            overflow: hidden;
+            min-width: 140px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .control-button:active {
+            opacity: 0.8;
+        }
+        
+        .control-button:disabled {
+            background: var(--gray-300);
+            color: var(--gray-500);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .answer-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .answer-buttons {
+            display: flex;
+            gap: 32px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .answer-button-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .answer-button {
+            width: 100%;
+            padding: 48px 64px;
+            border: 3px solid var(--gray-900);
+            border-radius: var(--border-radius-xl);
+            background: var(--white);
+            color: var(--gray-900);
+            font-size: 8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: none;
+            position: relative;
+            overflow: hidden;
+            min-width: 280px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .answer-button:active:not(:disabled) {
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+        
+        .answer-button:disabled {
+            background: transparent;
+            color: transparent;
+            border-color: transparent;
+            cursor: default;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .answer-button.paused {
+            background: linear-gradient(135deg, var(--gray-400), var(--gray-500)) !important;
+            color: var(--white) !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+
+        .answer-button.showing-feedback {
+            background: var(--white) !important;
+            color: var(--gray-900) !important;
+            border-color: var(--gray-900) !important;
+            cursor: not-allowed !important;
+            outline: none !important;
+        }
+
+        .answer-button:focus {
+            outline: none !important;
+        }
+
+        .judgment-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .judgment-result {
+            font-weight: 900;
+            animation: judgmentAppear 0.3s ease-out;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            line-height: 1;
+        }
+
+        .judgment-result.correct {
+            color: var(--success-600);
+            font-size: 16rem;
+        }
+
+        .judgment-result.incorrect {
+            color: var(--error-600);
+            font-size: 22rem;
+            position: relative;
+            top: -0.1em;
+        }
+
+        @keyframes judgmentAppear {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .instructions-card {
+            background: var(--gray-50);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+        }
+        
+        .instructions-card h4 {
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+            font-size: 1.125rem;
+        }
+        
+        .instructions-card ul {
+            list-style: none;
+            space: 8px;
+        }
+        
+        .instructions-card li {
+            margin-bottom: 8px;
+            color: var(--gray-700);
+            font-weight: 500;
+            position: relative;
+            padding-left: 24px;
+        }
+        
+        .instructions-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-600);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        #level-text,
+        #level-text2 {
+            color: var(--error-600);
+            font-weight: 700;
+        }
+
+        .result-screen {
+            text-align: center;
+        }
+        
+        .result-screen h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 32px;
+            animation: resultAppear var(--transition-slow) ease-out;
+        }
+        
+        @keyframes resultAppear {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .result-stats {
+            background: linear-gradient(135deg, var(--primary-50), var(--white));
+            border-radius: var(--border-radius-xl);
+            padding: 48px;
+            margin-bottom: 32px;
+            border: 2px solid var(--primary-100);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+        }
+        
+        .result-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+        
+        .result-accuracy {
+            font-size: 1.5rem;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .result-points {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+        
+        .result-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .highlight {
+            color: var(--error-600);
+            font-weight: 700;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            padding-top: 80px;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--border-radius-xl);
+            padding: 32px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--error-600);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            pointer-events: auto;
+        }
+
+        .modal-close:hover {
+            background: var(--error-700);
+        }
+
+        .modal-close:active {
+            background: var(--error-800);
+            transform: scale(0.95);
+        }
+
+        .tutorial-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--primary-50);
+            border: 2px solid var(--primary-500);
+            border-radius: var(--border-radius);
+            color: var(--primary-700);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .tutorial-button:hover {
+            background: var(--primary-100);
+        }
+
+        #sound-toggle:checked + span {
+            background-color: var(--success-600);
+        }
+
+        #sound-toggle:checked + span + span {
+            transform: translateX(26px);
+        }
+
+        #dark-mode-toggle:checked + span {
+            background-color: var(--primary-600);
+        }
+
+        #dark-mode-toggle:checked + span + span {
+            transform: translateX(26px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 16px;
+                margin: 0;
+                border-radius: var(--border-radius-lg);
+            }
+
+            .header {
+                margin-bottom: 16px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 4px;
+            }
+
+            .subtitle {
+                font-size: 0.85rem;
+            }
+
+            /* 設定エリアをコンパクトに */
+            .settings-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .setting-group {
+                padding: 16px;
+            }
+
+            .setting-label {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+            }
+
+            .setting-button {
+                min-height: 40px;
+                font-size: 0.75rem;
+            }
+
+            .setting-button small {
+                font-size: 0.6rem;
+            }
+
+            /* 統計カードを横1列に圧縮 */
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+                margin-bottom: 4px;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            /* ゲームエリアを大幅に縮小 */
+            .game-area {
+                height: 280px;
+                margin-bottom: 16px;
+            }
+
+            .letter {
+                font-size: 100px;
+            }
+
+            .start-message {
+                font-size: 1rem;
+                padding: 0 16px;
+            }
+
+            .trial-info {
+                top: 12px;
+                right: 12px;
+                padding: 8px 14px;
+                font-size: 0.9rem;
+            }
+
+            .example-explanation {
+                top: 10px;
+                padding: 10px 16px;
+                max-width: 95%;
+            }
+
+            .example-explanation #example-text {
+                font-size: 0.85rem;
+            }
+
+            /* 説明カードをコンパクトに */
+            .instruction-card {
+                padding: 16px;
+                margin: 12px 0;
+            }
+
+            .instruction-title {
+                font-size: 1.2rem;
+                margin-bottom: 6px;
+            }
+
+            /* 回答ボタンを横並びに保つがコンパクト化 */
+            .answer-area {
+                margin-bottom: 16px;
+                padding: 12px 0;
+            }
+
+            .answer-buttons {
+                gap: 12px;
+            }
+
+            .answer-button {
+                padding: 32px 20px;
+                min-width: 0;
+                font-size: 5rem;
+            }
+
+            .judgment-result.correct {
+                font-size: 10rem;
+            }
+
+            .judgment-result.incorrect {
+                font-size: 14rem;
+            }
+
+            .hint-area {
+                bottom: 10px;
+                padding: 10px 16px;
+            }
+
+            .hint-label {
+                font-size: 0.75rem;
+            }
+
+            .hint-letter {
+                font-size: 2rem;
+            }
+
+            /* コントロールボタン */
+            .controls {
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+
+            .control-button {
+                min-width: 100px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            /* ルール説明ボタン */
+            .tutorial-button {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+
+            /* モーダルのクローズボタン */
+            .modal-overlay {
+                padding-top: 60px;
+            }
+
+            .modal-content {
+                padding: 24px 16px;
+                max-height: 85vh;
+            }
+
+            .modal-content h4 {
+                font-size: 1.1rem;
+            }
+
+            /* 結果画面 */
+            .result-screen h2 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .result-stats {
+                padding: 32px 20px;
+                margin-bottom: 20px;
+            }
+
+            .result-score {
+                font-size: 2.5rem;
+            }
+
+            .result-accuracy {
+                font-size: 1.2rem;
+            }
+
+            .result-points {
+                font-size: 1rem;
+            }
+        }
+
+        /* Performance optimizations */
+        .judgment-result {
+            will-change: transform, opacity;
+        }
+        
+        /* Focus states for accessibility */
+        .setting-button:focus,
+        .control-button:focus {
+            outline: 2px solid var(--primary-500);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="game-screen">
+            <div class="header">
+                <h1>N-back課題</h1>
+                <p class="subtitle">記憶力とワーキングメモリーを鍛える認知トレーニング</p>
+            </div>
+
+            <div style="position: relative; margin-bottom: 24px;">
+                <div style="text-align: center;">
+                    <button type="button" class="tutorial-button" onclick="openTutorial()">
+                        📖 ルール説明を見る
+                    </button>
+                </div>
+                <button type="button" onclick="openSettings()" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: var(--gray-100); border: 2px solid var(--gray-300); border-radius: 50%; width: 48px; height: 48px; cursor: pointer; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; transition: background var(--transition-fast);" onmouseover="this.style.background='var(--gray-200)'" onmouseout="this.style.background='var(--gray-100)'">⚙️</button>
+            </div>
+
+            <div id="tutorial-modal" class="modal-overlay" style="display: none;" onclick="if(event.target.id === 'tutorial-modal') closeTutorial()">
+                <div class="modal-content">
+                    <h4>📖 N-back課題とは？</h4>
+                    <p style="margin-bottom: 16px; color: var(--gray-700); line-height: 1.6;">
+                        文字が次々に表示されます。<strong>今の文字が、<span id="level-text">1</span>個前の文字と同じかどうか</strong>を判定してください。
+                    </p>
+
+                    <div id="level-example-container"></div>
+
+                    <h4 style="margin-top: 20px;">🎮 遊び方</h4>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 8px;">• 文字が<span id="level-text2">1</span>個前と<strong>同じ</strong>なら「〇」を押す</li>
+                        <li style="margin-bottom: 8px;">• 文字が<span id="level-text3">1</span>個前と<strong>違う</strong>なら「×」を押す</li>
+                        <li>• 💡 コツ: 文字を声に出して覚え、リズムよく答えましょう</li>
+                    </ul>
+
+                    <div style="text-align: center; margin-top: 24px;">
+                        <button type="button" class="modal-close" onclick="closeTutorial()" style="position: relative; top: auto; right: auto; width: 200px; height: 56px; font-size: 1.1rem;">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings-modal" class="modal-overlay" style="display: none;" onclick="if(event.target.id === 'settings-modal') closeSettings()">
+                <div class="modal-content" style="max-width: 400px;">
+                    <h4>⚙️ 設定</h4>
+
+                    <div style="margin: 24px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: var(--border-radius); border: 1px solid var(--gray-200); margin-bottom: 16px;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--gray-900); margin-bottom: 4px;">効果音</div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">正解・不正解時の音</div>
+                            </div>
+                            <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                                <input type="checkbox" id="sound-toggle" style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-300); transition: .4s; border-radius: 34px;"></span>
+                                <span style="position: absolute; cursor: pointer; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--gray-50); border-radius: var(--border-radius); border: 1px solid var(--gray-200);">
+                            <div>
+                                <div style="font-weight: 600; color: var(--gray-900); margin-bottom: 4px;">ダークモード</div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">暗い画面で表示</div>
+                            </div>
+                            <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                                <input type="checkbox" id="dark-mode-toggle" style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-300); transition: .4s; border-radius: 34px;"></span>
+                                <span style="position: absolute; cursor: pointer; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 24px;">
+                        <button type="button" class="modal-close" onclick="closeSettings()" style="position: relative; top: auto; right: auto; width: 200px; height: 56px; font-size: 1.1rem;">閉じる</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-grid">
+                <div class="setting-group">
+                    <label class="setting-label">難易度</label>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 4px;">
+                        <div style="text-align: center; font-size: 0.65rem; color: var(--gray-500); font-weight: 500;">幕下まで</div>
+                        <div style="text-align: center; font-size: 0.65rem; color: var(--gray-500); font-weight: 500;">十両</div>
+                        <div style="text-align: center; font-size: 0.65rem; color: var(--gray-500); font-weight: 500;">横綱</div>
+                        <div style="text-align: center; font-size: 0.65rem; color: var(--gray-500);"></div>
+                    </div>
+                    <div class="button-group">
+                        <button class="setting-button active" data-level="1">かんたん<br><small>（1つ前）</small></button>
+                        <button class="setting-button" data-level="2">ふつう<br><small>（2つ前）</small></button>
+                        <button class="setting-button" data-level="3" style="font-size: 0.75rem;">むずかしい<br><small>（3つ前）</small></button>
+                        <button class="setting-button" data-level="4">激ムズ<br><small>（4つ前）</small></button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">表示速度</label>
+                    <div style="height: 14px; margin-bottom: 4px;"></div>
+                    <div class="button-group">
+                        <button class="setting-button active" data-time="2000">ゆっくり<br><small>（かんたん）</small></button>
+                        <button class="setting-button" data-time="1500">ふつう<br><small>（1.5秒）</small></button>
+                        <button class="setting-button" data-time="1000">速い<br><small>（むずかしい）</small></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card score">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">スコア</div>
+                </div>
+                <div class="stat-card correct">
+                    <div class="stat-value" id="correct-count">0</div>
+                    <div class="stat-label">正解数</div>
+                </div>
+                <div class="stat-card accuracy">
+                    <div class="stat-value" id="accuracy">0.0%</div>
+                    <div class="stat-label">正答率</div>
+                </div>
+            </div>
+
+            <div id="game-area" class="game-area">
+                <div id="letter" class="letter hidden"></div>
+                <div id="feedback" class="feedback hidden"></div>
+                <div id="start-message" class="start-message">開始ボタンを押して脳トレを始めてください</div>
+                <div id="trial-info" class="trial-info hidden"></div>
+                <div id="hint-area" class="hint-area hidden">
+                    <div id="hint-label" class="hint-label"></div>
+                    <div id="hint-letter" class="hint-letter"></div>
+                </div>
+            </div>
+
+            <div class="instruction-card" style="margin: 16px 0;">
+                <div class="instruction-title">
+                    <span id="instruction-text"><span class="highlight">1つ前</span>と同じなら〇、異なれば×</span>
+                </div>
+            </div>
+
+            <div class="answer-area">
+                <div class="answer-buttons">
+                    <div class="answer-button-wrapper">
+                        <button id="same-button" class="answer-button same" disabled>〇</button>
+                        <div id="same-judgment" class="judgment-overlay hidden">
+                            <div class="judgment-result"></div>
+                        </div>
+                    </div>
+                    <div class="answer-button-wrapper">
+                        <button id="different-button" class="answer-button different" disabled>×</button>
+                        <div id="different-judgment" class="judgment-overlay hidden">
+                            <div class="judgment-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="hint-button" class="control-button hint-button hidden">答えを表示する</button>
+                <button id="start-button" class="control-button start">
+                    <span>▶</span>
+                    <span>開始</span>
+                </button>
+                <button id="reset-button" class="control-button reset">
+                    <span>🔄</span>
+                    <span>リセット</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="result-screen" class="result-screen hidden">
+            <h2>結果発表</h2>
+            <div class="result-stats">
+                <div class="result-score" id="result-score">0/10問正解</div>
+                <div class="result-accuracy" id="result-accuracy">正答率: 0.0%</div>
+                <div class="result-points" id="result-points">スコア: 0点</div>
+            </div>
+            <div class="result-buttons">
+                <button id="replay-button" class="control-button start">
+                    <span>▶</span>
+                    <span>もう一度<br>プレイ</span>
+                </button>
+                <button id="menu-button" class="control-button reset">
+                    <span>📋</span>
+                    <span>メニューに戻る</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // モーダル制御用グローバル関数
+        function openTutorial() {
+            document.getElementById('tutorial-modal').style.display = 'flex';
+        }
+
+        function closeTutorial() {
+            document.getElementById('tutorial-modal').style.display = 'none';
+        }
+
+        function openSettings() {
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+
+        class NBackGame {
+            constructor() {
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.level = 1;
+                this.letterDisplayTime = 2000;
+                this.currentTrial = 0;
+                this.currentLetter = '';
+                this.showLetter = false;
+                this.letters = [];
+                this.score = 0;
+                this.correctCount = 0;
+                this.totalAnswered = 0;
+                this.feedback = '';
+                this.showResult = false;
+                this.canAnswer = false;
+                this.showHint = false;
+                this.lastAnsweredButton = null;
+                this.lastAnswerCorrect = null;
+
+                this.timerRef = null;
+                this.hideTimerRef = null;
+                this.animationEndHandler = null;
+
+                this.hiragana = ['あ', 'い', 'う', 'え', 'お', 'か', 'き', 'く', 'け', 'こ', 'さ', 'し'];
+
+                // Audio Context for sound effects
+                this.audioContext = null;
+                this.soundEnabled = localStorage.getItem('nback-sound-enabled') !== 'false';
+                this.soundsPreloaded = false;
+
+                this.initializeElements();
+                this.setupEventListeners();
+                this.preloadSounds();
+                this.updateDisplay();
+            }
+
+            preloadSounds() {
+                // 効果音を事前生成してパフォーマンス向上
+                try {
+                    if (!this.audioContext) {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    this.soundsPreloaded = true;
+                } catch (e) {
+                    this.soundEnabled = false;
+                }
+            }
+
+            playSound(isCorrect) {
+                if (!this.soundEnabled || !this.soundsPreloaded) return;
+
+                try {
+                    if (isCorrect) {
+                        // ピンポーン音（ド→ミ）
+                        const osc1 = this.audioContext.createOscillator();
+                        const gain1 = this.audioContext.createGain();
+                        osc1.connect(gain1);
+                        gain1.connect(this.audioContext.destination);
+                        osc1.frequency.value = 523; // C5（ド）
+                        osc1.type = 'sine';
+                        gain1.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                        gain1.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                        osc1.start();
+                        osc1.stop(this.audioContext.currentTime + 0.15);
+
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain2 = this.audioContext.createGain();
+                        osc2.connect(gain2);
+                        gain2.connect(this.audioContext.destination);
+                        osc2.frequency.value = 659; // E5（ミ）
+                        osc2.type = 'sine';
+                        gain2.gain.setValueAtTime(0.2, this.audioContext.currentTime + 0.1);
+                        gain2.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                        osc2.start(this.audioContext.currentTime + 0.1);
+                        osc2.stop(this.audioContext.currentTime + 0.3);
+                    } else {
+                        // ブブー音（低音）
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.setValueAtTime(200, this.audioContext.currentTime);
+                        osc.frequency.linearRampToValueAtTime(150, this.audioContext.currentTime + 0.3);
+                        osc.type = 'sawtooth';
+                        gain.gain.setValueAtTime(0.15, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                        osc.start();
+                        osc.stop(this.audioContext.currentTime + 0.3);
+                    }
+                } catch (e) {
+                    // Audio error - disable sound
+                    this.soundEnabled = false;
+                }
+            }
+            
+            initializeElements() {
+                this.elements = {
+                    gameScreen: document.getElementById('game-screen'),
+                    resultScreen: document.getElementById('result-screen'),
+                    instructionText: document.getElementById('instruction-text'),
+                    levelButtons: document.querySelectorAll('button[data-level]'),
+                    timeButtons: document.querySelectorAll('button[data-time]'),
+                    soundToggle: document.getElementById('sound-toggle'),
+                    darkModeToggle: document.getElementById('dark-mode-toggle'),
+                    score: document.getElementById('score'),
+                    correctCount: document.getElementById('correct-count'),
+                    accuracy: document.getElementById('accuracy'),
+                    gameArea: document.getElementById('game-area'),
+                    letter: document.getElementById('letter'),
+                    feedback: document.getElementById('feedback'),
+                    startMessage: document.getElementById('start-message'),
+                    trialInfo: document.getElementById('trial-info'),
+                    hintArea: document.getElementById('hint-area'),
+                    hintLabel: document.getElementById('hint-label'),
+                    hintLetter: document.getElementById('hint-letter'),
+                    hintButton: document.getElementById('hint-button'),
+                    startButton: document.getElementById('start-button'),
+                    resetButton: document.getElementById('reset-button'),
+                    sameButton: document.getElementById('same-button'),
+                    differentButton: document.getElementById('different-button'),
+                    sameJudgment: document.getElementById('same-judgment'),
+                    differentJudgment: document.getElementById('different-judgment'),
+                    levelText: document.getElementById('level-text'),
+                    levelText2: document.getElementById('level-text2'),
+                    levelText3: document.getElementById('level-text3'),
+                    levelExampleContainer: document.getElementById('level-example-container'),
+                    resultScore: document.getElementById('result-score'),
+                    resultAccuracy: document.getElementById('result-accuracy'),
+                    resultPoints: document.getElementById('result-points'),
+                    replayButton: document.getElementById('replay-button'),
+                    menuButton: document.getElementById('menu-button')
+                };
+            }
+            
+            setupEventListeners() {
+                // レベルボタン
+                this.elements.levelButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (!this.isPlaying) {
+                            this.setLevel(parseInt(btn.dataset.level));
+                        }
+                    });
+                });
+
+                // 時間ボタン
+                this.elements.timeButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (!this.isPlaying) {
+                            this.setDisplayTime(parseInt(btn.dataset.time));
+                        }
+                    });
+                });
+
+                // 効果音トグル
+                this.elements.soundToggle.checked = this.soundEnabled;
+                this.elements.soundToggle.addEventListener('change', (e) => {
+                    this.soundEnabled = e.target.checked;
+                    localStorage.setItem('nback-sound-enabled', e.target.checked);
+                });
+
+                // ダークモードトグル
+                const savedDarkMode = localStorage.getItem('nback-dark-mode') === 'true';
+                this.elements.darkModeToggle.checked = savedDarkMode;
+                if (savedDarkMode) {
+                    document.body.classList.add('dark-mode');
+                }
+                this.elements.darkModeToggle.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                    localStorage.setItem('nback-dark-mode', e.target.checked);
+                });
+
+                // コントロールボタン
+                this.elements.startButton.addEventListener('click', () => this.toggleGame());
+                this.elements.resetButton.addEventListener('click', () => this.resetGame());
+                
+                // 回答ボタン - クリックとタッチの両方に対応
+                // 共通の回答処理フラグで、〇と×の両方押しを防止
+                let answerHandled = false;
+
+                const handleSame = (e) => {
+                    e.preventDefault();
+                    if (answerHandled) return;
+                    answerHandled = true;
+                    this.handleAnswer(true);
+                    setTimeout(() => answerHandled = false, 300);
+                };
+
+                const handleDifferent = (e) => {
+                    e.preventDefault();
+                    if (answerHandled) return;
+                    answerHandled = true;
+                    this.handleAnswer(false);
+                    setTimeout(() => answerHandled = false, 300);
+                };
+
+                this.elements.sameButton.addEventListener('click', handleSame);
+                this.elements.sameButton.addEventListener('touchend', handleSame);
+                this.elements.differentButton.addEventListener('click', handleDifferent);
+                this.elements.differentButton.addEventListener('touchend', handleDifferent);
+
+                // 答えを見るボタン
+                this.elements.hintButton.addEventListener('click', () => this.toggleHint());
+
+                // 結果画面ボタン
+                this.elements.replayButton.addEventListener('click', () => {
+                    this.showResult = false;
+                    this.updateDisplay();
+                    this.startGame();
+                    // 画面の一番下にスクロール
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            window.scrollTo(0, document.body.scrollHeight);
+                        });
+                    });
+                });
+                this.elements.menuButton.addEventListener('click', () => {
+                    this.showResult = false;
+                    this.updateDisplay();
+                });
+                
+                // キーボード操作
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleGame();
+                    } else if (e.key.toLowerCase() === 'o' || e.key.toLowerCase() === 'j') {
+                        this.handleAnswer(true);
+                    } else if (e.key.toLowerCase() === 'x' || e.key.toLowerCase() === 'f') {
+                        this.handleAnswer(false);
+                    }
+                });
+            }
+            
+            setLevel(level) {
+                this.level = level;
+                this.updateLevelDisplay();
+            }
+
+            setDisplayTime(time) {
+                this.letterDisplayTime = time;
+                this.updateTimeDisplay();
+            }
+
+            updateLevelDisplay() {
+                this.elements.levelButtons.forEach(btn => {
+                    btn.classList.toggle('active', parseInt(btn.dataset.level) === this.level);
+                });
+
+                const levelTexts = {
+                    1: '<span class="highlight">1つ前</span>と同じなら〇、異なれば×',
+                    2: '<span class="highlight">2つ前</span>と同じなら〇、異なれば×',
+                    3: '<span class="highlight">3つ前</span>と同じなら〇、異なれば×',
+                    4: '<span class="highlight">4つ前</span>と同じなら〇、異なれば×'
+                };
+                this.elements.instructionText.innerHTML = levelTexts[this.level];
+                this.elements.levelText.textContent = this.level;
+                this.elements.levelText2.textContent = this.level;
+                this.elements.levelText3.textContent = this.level;
+
+                // 難易度に応じた図解を表示
+                this.updateLevelExample();
+            }
+
+            updateLevelExample() {
+                const examples = {
+                    1: `
+                        <div style="background: var(--white); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px; border: 2px solid var(--primary-200);">
+                            <div style="font-weight: 600; color: var(--primary-700); margin-bottom: 8px;">📝 例：1-back（1つ前と比べる）</div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 1.5rem;">
+                                <div style="width: 60px; height: 60px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700;">あ</div>
+                                <div style="color: var(--gray-400);">→</div>
+                                <div style="width: 60px; height: 60px; background: var(--primary-100); border: 2px solid var(--primary-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary-700);">あ</div>
+                                <div style="margin-left: 8px; color: var(--success-600); font-weight: 700;">→ 〇（同じ）</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 1.5rem;">
+                                <div style="width: 60px; height: 60px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700;">あ</div>
+                                <div style="color: var(--gray-400);">→</div>
+                                <div style="width: 60px; height: 60px; background: var(--primary-100); border: 2px solid var(--primary-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary-700);">い</div>
+                                <div style="margin-left: 8px; color: var(--error-600); font-weight: 700;">→ ×（違う）</div>
+                            </div>
+                        </div>
+                    `,
+                    2: `
+                        <div style="background: var(--white); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px; border: 2px solid var(--warning-200);">
+                            <div style="font-weight: 600; color: var(--warning-700); margin-bottom: 12px;">📝 例：2-back（2つ前と比べる）</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px; background: var(--warning-50); padding: 8px 12px; border-radius: 6px;">
+                                ⚠️ 最初の<strong style="color: var(--error-600);">2つ</strong>は例題（ボタン非表示）。<strong>3番目から〇×ボタンが表示され回答開始</strong>！
+                            </div>
+                            <div style="margin-bottom: 16px; position: relative;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; font-size: 1.3rem;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-bottom: 4px;">①</div>
+                                        <div style="width: 50px; height: 50px; background: var(--success-100); border: 2px solid var(--success-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: var(--success-700);">あ</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); margin-top: 20px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-bottom: 4px;">②</div>
+                                        <div style="width: 50px; height: 50px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem;">い</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); margin-top: 20px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-bottom: 4px;">③</div>
+                                        <div style="width: 50px; height: 50px; background: var(--success-100); border: 2px solid var(--success-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: var(--success-700);">あ</div>
+                                    </div>
+                                </div>
+                                <div style="text-align: center; margin-top: 8px; color: var(--success-600); font-weight: 700; font-size: 0.95rem;">
+                                    ↑ この2つを比べる ↑<br>
+                                    <span style="font-size: 1.1rem;">→ 同じなので 〇</span>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px; position: relative;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; font-size: 1.3rem;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-bottom: 4px;">①</div>
+                                        <div style="width: 50px; height: 50px; background: var(--error-100); border: 2px solid var(--error-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: var(--error-700);">あ</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); margin-top: 20px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-bottom: 4px;">②</div>
+                                        <div style="width: 50px; height: 50px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem;">い</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); margin-top: 20px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-bottom: 4px;">③</div>
+                                        <div style="width: 50px; height: 50px; background: var(--error-100); border: 2px solid var(--error-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: var(--error-700);">う</div>
+                                    </div>
+                                </div>
+                                <div style="text-align: center; margin-top: 8px; color: var(--error-600); font-weight: 700; font-size: 0.95rem;">
+                                    ↑ この2つを比べる ↑<br>
+                                    <span style="font-size: 1.1rem;">→ 違うので ×</span>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    3: `
+                        <div style="background: var(--white); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px; border: 2px solid var(--error-200);">
+                            <div style="font-weight: 600; color: var(--error-700); margin-bottom: 12px;">📝 例：3-back（3つ前と比べる）</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 12px; background: var(--error-50); padding: 8px 12px; border-radius: 6px;">
+                                ⚠️ 最初の<strong style="color: var(--error-600);">3つ</strong>は例題（ボタン非表示）。<strong>4番目から〇×ボタンが表示され回答開始</strong>！
+                            </div>
+                            <div style="margin-bottom: 16px; position: relative;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0px; font-size: 1.2rem; position: relative;">
+                                    <div style="text-align: center; position: relative;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">①</div>
+                                        <div style="width: 45px; height: 45px; background: var(--success-100); border: 2px solid var(--success-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: var(--success-700);">あ</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); font-size: 0.9rem; margin-top: 18px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">②</div>
+                                        <div style="width: 45px; height: 45px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem;">い</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); font-size: 0.9rem; margin-top: 18px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">③</div>
+                                        <div style="width: 45px; height: 45px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem;">う</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); font-size: 0.9rem; margin-top: 18px;">→</div>
+                                    <div style="text-align: center; position: relative;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">④</div>
+                                        <div style="width: 45px; height: 45px; background: var(--success-100); border: 2px solid var(--success-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: var(--success-700);">あ</div>
+                                    </div>
+                                </div>
+                                <div style="position: relative; margin-top: 5px; display: flex; justify-content: center;">
+                                    <svg style="width: 250px; height: 30px; overflow: visible;">
+                                        <path d="M 22.5 0 L 22.5 15 L 227.5 15 L 227.5 0" stroke="#059669" stroke-width="2" fill="none"/>
+                                    </svg>
+                                </div>
+                                <div style="text-align: center; margin-top: 0px; color: var(--success-600); font-weight: 700; font-size: 0.9rem;">
+                                    この2つを比べる<br>
+                                    <span style="font-size: 1.05rem;">→ 同じなので 〇</span>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 10px; position: relative;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0px; font-size: 1.2rem; position: relative;">
+                                    <div style="text-align: center; position: relative;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">①</div>
+                                        <div style="width: 45px; height: 45px; background: var(--error-100); border: 2px solid var(--error-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: var(--error-700);">あ</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); font-size: 0.9rem; margin-top: 18px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">②</div>
+                                        <div style="width: 45px; height: 45px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem;">い</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); font-size: 0.9rem; margin-top: 18px;">→</div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">③</div>
+                                        <div style="width: 45px; height: 45px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem;">う</div>
+                                    </div>
+                                    <div style="color: var(--gray-400); font-size: 0.9rem; margin-top: 18px;">→</div>
+                                    <div style="text-align: center; position: relative;">
+                                        <div style="font-size: 0.7rem; color: var(--gray-500); margin-bottom: 4px;">④</div>
+                                        <div style="width: 45px; height: 45px; background: var(--error-100); border: 2px solid var(--error-500); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: var(--error-700);">え</div>
+                                    </div>
+                                </div>
+                                <div style="position: relative; margin-top: 5px; display: flex; justify-content: center;">
+                                    <svg style="width: 250px; height: 30px; overflow: visible;">
+                                        <path d="M 22.5 0 L 22.5 15 L 227.5 15 L 227.5 0" stroke="#DC2626" stroke-width="2" fill="none"/>
+                                    </svg>
+                                </div>
+                                <div style="text-align: center; margin-top: 0px; color: var(--error-600); font-weight: 700; font-size: 0.9rem;">
+                                    この2つを比べる<br>
+                                    <span style="font-size: 1.05rem;">→ 違うので ×</span>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    4: ``
+                };
+
+                this.elements.levelExampleContainer.innerHTML = examples[this.level];
+            }
+            
+            updateTimeDisplay() {
+                this.elements.timeButtons.forEach(btn => {
+                    btn.classList.toggle('active', parseInt(btn.dataset.time) === this.letterDisplayTime);
+                });
+            }
+
+            toggleGame() {
+                if (!this.isPlaying) {
+                    this.startGame();
+                } else if (this.isPaused) {
+                    this.resumeGame();
+                } else {
+                    this.pauseGame();
+                }
+            }
+            
+            startGame() {
+                this.clearTimers();
+                
+                this.isPlaying = true;
+                this.isPaused = false;
+                this.currentTrial = 0;
+                this.letters = [];
+                this.score = 0;
+                this.correctCount = 0;
+                this.totalAnswered = 0;
+                this.feedback = '';
+                this.showResult = false;
+                this.canAnswer = false;
+                
+                this.updateDisplay();
+                this.runTrial(1, []);
+            }
+            
+            pauseGame() {
+                this.isPaused = true;
+                this.clearTimers();
+                this.updateDisplay();
+            }
+            
+            resumeGame() {
+                this.isPaused = false;
+                this.updateDisplay();
+
+                if (this.showLetter) {
+                    // 古いアニメーションハンドラーを削除
+                    if (this.animationEndHandler) {
+                        this.elements.letter.removeEventListener('animationend', this.animationEndHandler);
+                    }
+
+                    // 新しいアニメーションハンドラーを登録
+                    this.animationEndHandler = () => {
+                        if (!this.isPaused) {
+                            this.elements.letter.classList.add('hidden');
+                            this.showLetter = false;
+                        }
+                    };
+                    this.elements.letter.addEventListener('animationend', this.animationEndHandler);
+                }
+
+                this.timerRef = setTimeout(() => {
+                    this.runTrial(this.currentTrial + 1, this.letters);
+                }, this.showLetter ? 3000 : 2500);
+            }
+            
+            stopGame() {
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.clearTimers();
+                // アニメーションハンドラーをクリーンアップ
+                if (this.animationEndHandler) {
+                    this.elements.letter.removeEventListener('animationend', this.animationEndHandler);
+                    this.animationEndHandler = null;
+                }
+                this.updateDisplay();
+            }
+            
+            resetGame() {
+                this.stopGame();
+                this.score = 0;
+                this.correctCount = 0;
+                this.totalAnswered = 0;
+                this.currentTrial = 0;
+                this.currentLetter = '';
+                this.showLetter = false;
+                this.feedback = '';
+                this.letters = [];
+                this.canAnswer = false;
+                this.showHint = false;
+                this.lastAnsweredButton = null;
+                this.lastAnswerCorrect = null;
+                this.updateDisplay();
+            }
+            
+            runTrial(trialNum, prevLetters) {
+                if (this.isPaused) return;
+
+                // 通常モード（レベル1-3）：10問で終了
+                // 激ムズモード（レベル4）：10問以降は間違えるまで継続（終了条件なし）
+                if (this.level !== 4 && trialNum > this.level + 10) {
+                    this.isPlaying = false;
+                    this.isPaused = false;
+                    this.showLetter = false;
+                    this.showResult = true;
+                    this.updateDisplay();
+                    return;
+                }
+                
+                let newLetter;
+                const shouldMatch = Math.random() < 0.5;
+                
+                if (trialNum > this.level && shouldMatch && prevLetters.length >= this.level) {
+                    newLetter = prevLetters[prevLetters.length - this.level];
+                } else {
+                    newLetter = this.hiragana[Math.floor(Math.random() * this.hiragana.length)];
+                }
+                
+                const newLetters = [...prevLetters, newLetter];
+                
+                this.currentTrial = trialNum;
+                this.currentLetter = newLetter;
+                this.showLetter = true;
+                this.letters = newLetters;
+                this.canAnswer = trialNum > this.level;
+                this.feedback = '';
+                
+                this.updateDisplay();
+
+                // 古いアニメーションハンドラーを削除
+                if (this.animationEndHandler) {
+                    this.elements.letter.removeEventListener('animationend', this.animationEndHandler);
+                }
+
+                // 新しいアニメーションハンドラーを登録
+                this.animationEndHandler = () => {
+                    if (!this.isPaused) {
+                        this.elements.letter.classList.add('hidden');
+                        this.showLetter = false;
+                    }
+                };
+                this.elements.letter.addEventListener('animationend', this.animationEndHandler);
+
+                this.timerRef = setTimeout(() => {
+                    if (!this.isPaused) {
+                        this.runTrial(trialNum + 1, newLetters);
+                    }
+                }, 3000);
+            }
+            
+            handleAnswer(isMatch) {
+                if (!this.canAnswer || !this.isPlaying || this.isPaused) return;
+
+                // 即座に回答不可にして、二重回答を完全に防止
+                this.canAnswer = false;
+
+                const currentIndex = this.letters.length - 1;
+                const compareIndex = currentIndex - this.level;
+                const actualMatch = this.letters[currentIndex] === this.letters[compareIndex];
+                const correct = isMatch === actualMatch;
+
+                // 効果音を非同期で再生（メイン処理をブロックしない）
+                if (this.soundEnabled) {
+                    setTimeout(() => this.playSound(correct), 0);
+                }
+
+                // 文字は通常通りアニメーションで消える（タイマーはそのまま）
+
+                if (correct) {
+                    this.score += 10;
+                    this.correctCount += 1;
+                }
+
+                this.totalAnswered += 1;
+                // this.showHint = false; を削除して、答え表示を継続
+
+                // 押したボタンと判定結果を保存
+                this.lastAnsweredButton = isMatch ? 'same' : 'different';
+                this.lastAnswerCorrect = correct;
+                this.feedback = 'showing';
+
+                // 判定結果を即座に表示
+                this.showJudgmentImmediate();
+
+                // 統計のみ更新
+                this.elements.score.textContent = this.score;
+                this.elements.correctCount.textContent = this.correctCount;
+                const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
+                this.elements.accuracy.textContent = accuracy.toFixed(1) + '%';
+
+                // 激ムズモード（レベル4）：10問以上で不正解なら即終了
+                if (this.level === 4 && !correct && this.totalAnswered >= 10) {
+                    // 1秒後に結果画面へ
+                    setTimeout(() => {
+                        this.clearTimers();
+                        this.isPlaying = false;
+                        this.isPaused = false;
+                        this.showLetter = false;
+                        this.showResult = true;
+                        this.feedback = '';
+                        this.lastAnsweredButton = null;
+                        this.lastAnswerCorrect = null;
+                        this.updateDisplay();
+                    }, 1000);
+                    return;
+                }
+
+                setTimeout(() => {
+                    this.feedback = '';
+                    this.lastAnsweredButton = null;
+                    this.lastAnswerCorrect = null;
+                    this.hideJudgment();
+                    // canAnswerは次の文字表示時に自動的に設定されるため、ここでは変更しない
+                }, 1000);
+            }
+
+            toggleHint() {
+                if (!this.isPlaying || this.isPaused) return;
+                this.showHint = !this.showHint;
+                this.updateDisplay();
+            }
+
+            showJudgmentImmediate() {
+                // 判定結果を即座に表示（updateDisplay()を呼ばずに直接DOM操作）
+                if (!this.lastAnsweredButton) return;
+
+                const judgmentElement = this.lastAnsweredButton === 'same' ? this.elements.sameJudgment : this.elements.differentJudgment;
+                const resultElement = judgmentElement.querySelector('.judgment-result');
+
+                judgmentElement.classList.remove('hidden');
+                resultElement.textContent = this.lastAnswerCorrect ? '〇' : '×';
+                resultElement.className = `judgment-result ${this.lastAnswerCorrect ? 'correct' : 'incorrect'}`;
+
+                const otherJudgment = this.lastAnsweredButton === 'same' ? this.elements.differentJudgment : this.elements.sameJudgment;
+                otherJudgment.classList.add('hidden');
+            }
+
+            hideJudgment() {
+                // 判定表示を非表示に
+                this.elements.sameJudgment.classList.add('hidden');
+                this.elements.differentJudgment.classList.add('hidden');
+            }
+
+            clearTimers() {
+                if (this.timerRef) {
+                    clearTimeout(this.timerRef);
+                    this.timerRef = null;
+                }
+                if (this.hideTimerRef) {
+                    clearTimeout(this.hideTimerRef);
+                    this.hideTimerRef = null;
+                }
+            }
+            
+            updateDisplay() {
+                // 画面の表示切り替え
+                this.elements.gameScreen.classList.toggle('hidden', this.showResult);
+                this.elements.resultScreen.classList.toggle('hidden', !this.showResult);
+
+                if (this.showResult) {
+                    const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
+                    this.elements.resultScore.textContent = `${this.correctCount}/10問正解`;
+                    this.elements.resultAccuracy.textContent = `正答率: ${accuracy.toFixed(1)}%`;
+                    this.elements.resultPoints.textContent = `スコア: ${this.score}点`;
+                    return;
+                }
+
+                // レベルと時間設定表示
+                this.updateLevelDisplay();
+                this.updateTimeDisplay();
+
+                // 統計表示
+                this.elements.score.textContent = this.score;
+                this.elements.correctCount.textContent = this.correctCount;
+                const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
+                this.elements.accuracy.textContent = accuracy.toFixed(1) + '%';
+                
+                // ゲームエリア表示
+                if (this.showLetter) {
+                    this.elements.letter.classList.remove('hidden');
+                    // 文字を設定
+                    this.elements.letter.textContent = this.currentLetter;
+                    // 表示時間に合わせてアニメーションの長さを調整
+                    this.elements.letter.style.animationDuration = `${this.letterDisplayTime}ms`;
+                    // アニメーションを必ずリセットして再開（同じ文字でも表示されるように）
+                    this.elements.letter.style.animation = 'none';
+                    this.elements.letter.offsetHeight; // リフロー強制
+                    this.elements.letter.style.animation = '';
+                }
+                
+                // 判定結果表示（押したボタンの上にオーバーレイ）
+                if (this.feedback === 'showing' && this.lastAnsweredButton) {
+                    // 押したボタンの上に判定結果を表示
+                    const judgmentElement = this.lastAnsweredButton === 'same' ? this.elements.sameJudgment : this.elements.differentJudgment;
+                    const resultElement = judgmentElement.querySelector('.judgment-result');
+
+                    judgmentElement.classList.remove('hidden');
+                    resultElement.textContent = this.lastAnswerCorrect ? '〇' : '×';
+                    resultElement.className = `judgment-result ${this.lastAnswerCorrect ? 'correct' : 'incorrect'}`;
+
+                    // もう一方のボタンは非表示
+                    const otherJudgment = this.lastAnsweredButton === 'same' ? this.elements.differentJudgment : this.elements.sameJudgment;
+                    otherJudgment.classList.add('hidden');
+                } else {
+                    // 判定表示を消す
+                    this.elements.sameJudgment.classList.add('hidden');
+                    this.elements.differentJudgment.classList.add('hidden');
+                }
+
+                this.elements.startMessage.classList.toggle('hidden', this.isPlaying || this.showLetter || this.feedback);
+                
+                this.elements.trialInfo.classList.toggle('hidden', !this.isPlaying);
+                const isExample = this.isPlaying && this.currentTrial > 0 && this.currentTrial <= this.level;
+
+                if (this.isPlaying) {
+                    const problemNumber = this.currentTrial > this.level ? this.currentTrial - this.level : 0;
+                    this.elements.trialInfo.textContent = isExample ?
+                        `例題${this.currentTrial}` :
+                        `${problemNumber}問目`;
+                    // 例題の時は背景色を変更
+                    this.elements.gameArea.classList.toggle('example', isExample);
+                } else {
+                    this.elements.gameArea.classList.remove('example');
+                }
+
+                // コントロールボタン
+                const startButtonText = this.elements.startButton.querySelector('span:last-child');
+                startButtonText.textContent = !this.isPlaying ? '開始' : 
+                    this.isPaused ? '再開' : '一時停止';
+                this.elements.startButton.className = `control-button ${!this.isPlaying ? 'start' :
+                    this.isPaused ? 'resume' : 'pause'}`;
+
+                // レベルボタンと時間ボタン
+                this.elements.levelButtons.forEach(btn => {
+                    btn.disabled = this.isPlaying;
+                });
+                this.elements.timeButtons.forEach(btn => {
+                    btn.disabled = this.isPlaying;
+                });
+
+                // 回答ボタン
+                const answerPaused = this.isPaused && this.canAnswer;
+                const showingFeedback = (this.feedback === 'showing');
+
+                // ゲーム開始前と例題の時は回答エリアを見えなくする（スペースは保持）
+                const shouldHideAnswerArea = !this.isPlaying || isExample;
+                const answerArea = document.querySelector('.answer-area');
+                if (shouldHideAnswerArea) {
+                    answerArea.style.visibility = 'hidden';
+                    answerArea.style.pointerEvents = 'none';
+                } else {
+                    answerArea.style.visibility = 'visible';
+                    answerArea.style.pointerEvents = 'auto';
+                }
+
+                // instruction-cardの表示切り替え
+                const instructionCard = document.querySelector('.instruction-card');
+                if (this.isPlaying) {
+                    if (isExample) {
+                        // 例題中
+                        if (this.currentTrial === 1) {
+                            this.elements.instructionText.innerHTML = 'これが最初の文字です。覚えてください。';
+                        } else {
+                            this.elements.instructionText.innerHTML = `これが<span class="highlight">${this.currentTrial}番目</span>の文字です。覚えてください。`;
+                        }
+                    } else {
+                        // 問題中
+                        const levelTexts = {
+                            1: '<span class="highlight">1つ前</span>と同じひらがなですか？',
+                            2: '<span class="highlight">2つ前</span>と同じひらがなですか？',
+                            3: '<span class="highlight">3つ前</span>と同じひらがなですか？',
+                            4: '<span class="highlight">4つ前</span>と同じひらがなですか？'
+                        };
+                        this.elements.instructionText.innerHTML = levelTexts[this.level];
+                    }
+                    instructionCard.style.display = 'block';
+                } else {
+                    // ゲーム開始前は説明文
+                    const levelTexts = {
+                        1: '<span class="highlight">1つ前</span>と同じなら〇、異なれば×',
+                        2: '<span class="highlight">2つ前</span>と同じなら〇、異なれば×',
+                        3: '<span class="highlight">3つ前</span>と同じなら〇、異なれば×',
+                        4: '<span class="highlight">4つ前</span>と同じなら〇、異なれば×'
+                    };
+                    this.elements.instructionText.innerHTML = levelTexts[this.level];
+                    instructionCard.style.display = 'block';
+                }
+
+                if (!shouldHideAnswerArea) {
+                    this.elements.sameButton.disabled = false;
+                    this.elements.differentButton.disabled = false;
+                    this.elements.sameButton.className = `answer-button same ${answerPaused ? 'paused' : ''} ${showingFeedback ? 'showing-feedback' : ''}`;
+                    this.elements.differentButton.className = `answer-button different ${answerPaused ? 'paused' : ''} ${showingFeedback ? 'showing-feedback' : ''}`;
+                }
+
+                // 答えを見るボタンとヒント表示
+                // ボタンはゲーム中は常に表示
+                this.elements.hintButton.classList.toggle('hidden', !this.isPlaying);
+
+                // 答えを表示するがONの時は常に表示
+                if (this.showHint && this.isPlaying && this.letters.length > this.level) {
+                    const compareIndex = this.letters.length - 1 - this.level;
+                    this.elements.hintLabel.textContent = `${this.level}個前の文字：`;
+                    this.elements.hintLetter.textContent = this.letters[compareIndex];
+                    this.elements.hintArea.classList.remove('hidden');
+                } else {
+                    this.elements.hintArea.classList.add('hidden');
+                }
+            }
+        }
+        
+        // ゲーム開始
+        const game = new NBackGame();
+    </script>
+</body>
+</html>
