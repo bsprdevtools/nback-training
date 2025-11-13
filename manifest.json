@@ -2,7 +2,7 @@
   "name": "N-back課題練習アプリ Pro",
   "short_name": "N-back Pro",
   "description": "認知機能トレーニング - N-back課題練習アプリ",
-  "start_url": "./nback-pro.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1F2937",
   "theme_color": "#4F46E5",
@@ -16,3 +16,4 @@
     }
   ]
 }
+
