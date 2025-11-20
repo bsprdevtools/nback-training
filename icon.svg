@@ -1,8 +1,0 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="512" height="512" fill="#4F46E5" rx="80"/>
-
-  <!-- N-back テキスト -->
-  <text x="256" y="220" font-family="Inter, Arial, sans-serif" font-size="140" font-weight="bold" fill="white" text-anchor="middle">N</text>
-  <text x="256" y="350" font-family="Inter, Arial, sans-serif" font-size="80" font-weight="600" fill="white" text-anchor="middle" opacity="0.9">back</text>
-</svg>
