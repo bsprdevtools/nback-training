@@ -933,6 +933,29 @@
             justify-content: center;
             gap: 20px;
         }
+
+        /* 結果画面のボタンは通常サイズに */
+        .result-buttons .control-button.start {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            min-width: 140px;
+            min-height: auto;
+            border: 2px solid var(--primary-600);
+        }
+
+        /* メニューに戻るボタンは小さく */
+        .control-button.menu-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            min-width: 100px;
+        }
+
+        /* 回答を表示ボタン */
+        .control-button.hint-button {
+            background: linear-gradient(135deg, var(--warning-500), var(--warning-600));
+            color: var(--white);
+            border: 2px solid var(--warning-600);
+        }
         
         .highlight {
             color: var(--error-600);
@@ -1404,13 +1427,11 @@
             </div>
 
             <div class="controls">
-                <button id="hint-button" class="control-button hint-button hidden">答えを表示する</button>
+                <button id="hint-button" class="control-button hint-button hidden">回答を表示</button>
                 <button id="start-button" class="control-button start">
-                    <span>▶</span>
                     <span>開始</span>
                 </button>
                 <button id="reset-button" class="control-button reset">
-                    <span>🔄</span>
                     <span>リセット</span>
                 </button>
             </div>
@@ -1425,11 +1446,9 @@
             </div>
             <div class="result-buttons">
                 <button id="replay-button" class="control-button start">
-                    <span>▶</span>
-                    <span>もう一度<br>プレイ</span>
+                    <span>もう一度プレイ</span>
                 </button>
-                <button id="menu-button" class="control-button reset">
-                    <span>📋</span>
+                <button id="menu-button" class="control-button reset menu-small">
                     <span>メニューに戻る</span>
                 </button>
             </div>
@@ -1968,6 +1987,17 @@
             runTrial(trialNum, prevLetters) {
                 if (this.isPaused) return;
 
+                // 前の問題で回答可能だったのに回答しなかった場合は不正解扱い
+                if (trialNum > this.level + 1 && this.canAnswer) {
+                    // スルー（無回答）= 不正解
+                    this.totalAnswered += 1;
+                    // スコアは加算しない、正答数も加算しない
+                    this.elements.score.textContent = this.score;
+                    this.elements.correctCount.textContent = this.correctCount;
+                    const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
+                    this.elements.accuracy.textContent = accuracy.toFixed(1) + '%';
+                }
+
                 // 通常モード（レベル1-3）：10問で終了
                 // 激ムズモード（レベル4）：10問以降は間違えるまで継続（終了条件なし）
                 if (this.level !== 4 && trialNum > this.level + 10) {
@@ -2196,8 +2226,8 @@
                 }
 
                 // コントロールボタン
-                const startButtonText = this.elements.startButton.querySelector('span:last-child');
-                startButtonText.textContent = !this.isPlaying ? '開始' : 
+                const startButtonText = this.elements.startButton.querySelector('span');
+                startButtonText.textContent = !this.isPlaying ? '開始' :
                     this.isPaused ? '再開' : '一時停止';
                 this.elements.startButton.className = `control-button ${!this.isPlaying ? 'start' :
                     this.isPaused ? 'resume' : 'pause'}`;
