@@ -1492,6 +1492,7 @@
                 this.showHint = false;
                 this.lastAnsweredButton = null;
                 this.lastAnswerCorrect = null;
+                this.endlessUnlocked = false; // 激ムズモードでエンドレス解放済みか
 
                 this.timerRef = null;
                 this.hideTimerRef = null;
@@ -1919,7 +1920,8 @@
                 this.feedback = '';
                 this.showResult = false;
                 this.canAnswer = false;
-                
+                this.endlessUnlocked = false;
+
                 this.updateDisplay();
                 this.runTrial(1, []);
             }
@@ -1999,14 +2001,21 @@
                 }
 
                 // 通常モード（レベル1-3）：10問で終了
-                // 激ムズモード（レベル4）：10問以降は間違えるまで継続（終了条件なし）
-                if (this.level !== 4 && trialNum > this.level + 10) {
-                    this.isPlaying = false;
-                    this.isPaused = false;
-                    this.showLetter = false;
-                    this.showResult = true;
-                    this.updateDisplay();
-                    return;
+                // 激ムズモード（レベル4）：10問パーフェクトならエンドレス、1問でも間違えたら10問で終了
+                if (trialNum > this.level + 10) {
+                    // レベル4で10問パーフェクト達成時にフラグを立てる
+                    if (this.level === 4 && this.correctCount === 10 && !this.endlessUnlocked) {
+                        this.endlessUnlocked = true;
+                    }
+                    // エンドレス解放済みなら継続、そうでなければ終了
+                    if (!this.endlessUnlocked) {
+                        this.isPlaying = false;
+                        this.isPaused = false;
+                        this.showLetter = false;
+                        this.showResult = true;
+                        this.updateDisplay();
+                        return;
+                    }
                 }
                 
                 let newLetter;
@@ -2090,8 +2099,8 @@
                 const accuracy = this.totalAnswered > 0 ? (this.correctCount / this.totalAnswered * 100) : 0;
                 this.elements.accuracy.textContent = accuracy.toFixed(1) + '%';
 
-                // 激ムズモード（レベル4）：10問以上で不正解なら即終了
-                if (this.level === 4 && !correct && this.totalAnswered >= 10) {
+                // 激ムズモード（レベル4）：エンドレス中（11問目以降）に不正解なら即終了
+                if (this.level === 4 && !correct && this.totalAnswered > 10) {
                     // 1秒後に結果画面へ
                     setTimeout(() => {
                         this.clearTimers();
